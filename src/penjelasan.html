@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Penjelasan File Java</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1, h2 { color: #2c3e50; }
+        pre { background: #f4f4f4; padding: 1em; border-radius: 5px; }
+        .file-section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    
+    <div class="file-section">
+        <h2>Kendaraan.java</h2>
+        <h3>Ringkasan singkat</h3>
+        <p>Kelas dasar yang menyimpan atribut umum kendaraan, menyediakan constructor, method untuk menghitung sewa (dengan method overloading), serta variabel dan method <em>static</em> untuk statistik global.</p>
+
+        <h3>Blok-blok kode</h3>
+        <ol>
+            <li><strong>Static variables</strong>  <code>protected static int totalKendaraan</code>, <code>protected static double totalPendapatan</code>
+                <p>Digunakan untuk menghitung jumlah kendaraan yang dibuat dan mengakumulasi pendapatan dari transaksi sewa. Bersifat shared di semua instance.</p>
+            </li>
+            <li><strong>Instance variables</strong>  <code>protected String merk</code>, <code>protected int tahun</code>, <code>protected double hargaSewa</code>
+                <p>Menyimpan atribut per kendaraan. <code>protected</code> memberi akses ke subclass dan kelas dalam paket yang sama.</p>
+            </li>
+            <li><strong>Constructor</strong>  inisialisasi atribut dan <code>totalKendaraan++</code>
+                <p>Menggunakan <code>this</code> untuk membedakan parameter dan atribut. Panggilan constructor dari subclass lewat <code>super(...)</code> juga akan menambah counter global.</p>
+            </li>
+            <li><strong>Method overloading</strong>  tiga versi <code>hitungTotalSewa(...)</code>
+                <p>1) <code>hitungTotalSewa(int jumlahHari)</code>: perkalian sederhana dan menambahkan nilai ke <code>totalPendapatan</code>.
+                2) <code>hitungTotalSewa(int jumlahHari, double diskon)</code>: memanggil versi 1 via <code>this.hitungTotalSewa(jumlahHari)</code> lalu mengaplikasikan diskon.
+                3) <code>hitungTotalSewa(int jumlahHari, double diskon, double biayaAsuransi)</code>: memanggil versi 2 lalu menambahkan biaya asuransi.</p>
+                <p><em>Catatan penting:</em> Implementasi saat ini menambahkan ke <code>totalPendapatan</code> di versi 1. Karena versi 2/3 memanggil versi 1 terlebih dahulu, <code>totalPendapatan</code> bisa merekam jumlah sebelum diskon/asuransiini mungkin tidak sesuai maksud. Rekomendasi: hitung jumlah akhir terlebih dahulu, lalu tambahkan ke statistik, atau buat method transaksi terpisah.</p>
+            </li>
+            <li><strong>Metode presentasi</strong>  <code>tampilkanInfo()</code>
+                <p>Menampilkan atribut dasar kendaraan ke konsol. Subclass dapat <code>override</code> dan memanggil <code>super.tampilkanInfo()</code> untuk mempertahankan output dasar.</p>
+            </li>
+            <li><strong>updateHarga(double)</strong>
+                <p>Mengubah harga sewa instance. Memanfaatkan <code>this</code> untuk mengakses atribut instance.</p>
+            </li>
+            <li><strong>Static methods</strong>  getter &amp; utilitas: <code>getTotalKendaraan()</code>, <code>getTotalPendapatan()</code>, <code>tampilkanStatistik()</code>, <code>resetStatistik()</code>
+                <p>Memungkinkan akses dan operasi pada statistik global tanpa membuat object. Perhatikan perlunya proteksi/otorisasi sebelum melakukan <code>resetStatistik()</code> pada aplikasi nyata.</p>
+            </li>
+        </ol>
+
+        <h3>Rekomendasi singkat</h3>
+        <ul>
+            <li>Gunakan validasi input (harga >= 0, jumlah hari > 0).</li>
+            <li>Pindahkan penambahan <code>totalPendapatan</code> agar mencerminkan nilai transaksi akhir (setelah diskon/asuransi).</li>
+            <li>Untuk aplikasi multi-thread gunakan mekanisme thread-safe (synchronized atau Atomic).</li>
+            <li>Pertimbangkan <code>BigDecimal</code> untuk perhitungan keuangan.</li>
+        </ul>
+    </div>
+
+    <div class="file-section">
+        <h2>Mobil.java</h2>
+        <h3>Ringkasan singkat</h3>
+        <p>Subclass dari <code>Kendaraan</code> yang menambahkan atribut spesifik (jumlah pintu, jenis transmisi), override perilaku perhitungan sewa (markup 10%) dan menyediakan method tambahan terkait mobil.</p>
+
+        <h3>Blok-blok kode</h3>
+        <ol>
+            <li><strong>Extends</strong>  <code>class Mobil extends Kendaraan</code>
+                <p>Menandakan pewarisan. <code>Mobil</code> mewarisi atribut protected dan method dari <code>Kendaraan</code>.</p>
+            </li>
+            <li><strong>Static variable khusus</strong>  <code>private static int totalMobil</code>
+                <p>Penghitung jumlah objek <code>Mobil</code>.</p>
+            </li>
+            <li><strong>Instance variable</strong>  <code>private int jumlahPintu</code>, <code>private String jenisTransmisi</code>
+                <p>Atribut spesifik mobil; bersifat private sehingga hanya diakses melalui method class.</p>
+            </li>
+            <li><strong>Constructor</strong>  memanggil <code>super(...)</code> dan menginisialisasi atribut sendiri
+                <p><code>super(merk, tahun, hargaSewa)</code> memanggil constructor parent yang juga menambah <code>totalKendaraan</code>. Lalu <code>totalMobil++</code> menambah penghitung mobil.</p>
+            </li>
+            <li><strong>Override hitungTotalSewa(int)</strong>
+                <p>Menambahkan markup 10%: <code>return this.hargaSewa * jumlahHari * 1.1;</code>  menggunakan <code>this</code> untuk mengakses atribut protected parent.</p>
+            </li>
+            <li><strong>Overload hitungTotalSewa(int, boolean)</strong>
+                <p>Menambahkan biaya driver jika <code>denganDriver==true</code>. Memanggil versi local <code>this.hitungTotalSewa(jumlahHari)</code> sehingga override berlaku.</p>
+            </li>
+            <li><strong>Method yang memakai super</strong>  <code>hitungSewaStandard(int)</code>
+                <p>Memanggil <code>super.hitungTotalSewa(jumlahHari)</code> untuk mendapatkan harga tanpa markup (mengakses method parent secara eksplisit).</p>
+            </li>
+            <li><strong>Override tampilkanInfo()</strong>
+                <p>Mencetak header khusus "MOBIL", memanggil <code>super.tampilkanInfo()</code> lalu menambahkan info jumlah pintu dan transmisi.</p>
+            </li>
+            <li><strong>Method perbandingan</strong>  <code>bandingkanHarga(int)</code>
+                <p>Menampilkan perbandingan antara harga parent (standard) dan harga mobil (+10%). Berguna untuk demo <code>this</code> vs <code>super</code>.</p>
+            </li>
+            <li><strong>Static method</strong>  <code>getTotalMobil()</code>, <code>tampilkanInfoMobil()</code>
+                <p>Info ringkas jumlah mobil terdaftar.</p>
+            </li>
+        </ol>
+
+        <h3>Catatan &amp; rekomendasi</h3>
+        <ul>
+            <li>Karena <code>hitungTotalSewa</code> override mengubah hasil, pastikan ketika menghitung pendapatan global metode yang dipanggil untuk menambah pendapatan adalah versi final (yang memperhitungkan markup/driver).</li>
+            <li>Pertimbangkan menambahkan getter untuk atribut private jika diperlukan akses di luar class.</li>
+        </ul>
+    </div>
+
+    <div class="file-section">
+        <h2>Motor.java</h2>
+        <h3>Ringkasan singkat</h3>
+        <p>Subclass dari <code>Kendaraan</code> dengan atribut <code>jenisMotor</code>, overload method untuk menambahkan biaya helm, dan metode presentasi khusus.</p>
+
+        <h3>Blok-blok kode</h3>
+        <ol>
+            <li><strong>Static variable khusus</strong>  <code>private static int totalMotor</code>
+                <p>Penghitung jumlah objek <code>Motor</code>.</p>
+            </li>
+            <li><strong>Instance variable</strong>  <code>private String jenisMotor</code>
+                <p>Menandai tipe motor (matic, sport, dll.).</p>
+            </li>
+            <li><strong>Constructor</strong>  <code>public Motor(...)</code>
+                <p>Panggilan <code>super(merk, tahun, hargaSewa)</code> menginisialisasi atribut parent dan menambah <code>totalKendaraan</code>. Lalu <code>totalMotor++</code> menambah penghitung motor.</p>
+            </li>
+            <li><strong>Method overloading</strong>  <code>hitungTotalSewa(int jumlahHari, int jumlahHelm)</code>
+                <p>Memanggil <code>super.hitungTotalSewa(jumlahHari)</code> lalu menambahkan biaya helm (Rp 5.000 per helm per hari). Karena memanggil <code>super</code>, method ini tidak memanggil versi yang menambah pendapatan jika versi parent menambahkan; namun perhatikan bagaimana <code>totalPendapatan</code> dimutasi di parent pada panggilan yang berbeda.</p>
+            </li>
+            <li><strong>Override tampilkanInfo()</strong>
+                <p>Memanggil <code>super.tampilkanInfo()</code> dan menambahkan baris jenis motor.</p>
+            </li>
+            <li><strong>infoLengkap()</strong>
+                <p>Menampilkan detail lengkap motor memakai atribut protected dari parent (<code>tahun</code>, <code>hargaSewa</code>) untuk demo akses <code>this</code> dan akses protected.</p>
+            </li>
+            <li><strong>Static method</strong>  <code>getTotalMotor()</code>, <code>tampilkanInfoMotor()</code>
+                <p>Menampilkan informasi jumlah motor terdaftar.</p>
+            </li>
+        </ol>
+
+        <h3>Catatan &amp; rekomendasi</h3>
+        <ul>
+            <li>Perhatikan pencatatan pendapatan: beberapa method memanggil <code>super.hitungTotalSewa</code> yang bisa langsung menambah <code>totalPendapatan</code>. Tentukan apakah pemanggilan method perhitungan juga harus merepresentasikan transaksi nyata.</li>
+            <li>Jika biaya helm atau biaya opsional lain ditambahkan, pertimbangkan untuk membuat objek transaksi terpisah agar pelaporan dan rollback lebih mudah.</li>
+        </ul>
+    </div>
+
+    <div class="file-section">
+        <h2>Main.java</h2>
+        <h3>Ringkasan singkat</h3>
+        <p>Class berisi method <code>main(String[] args)</code> yang mendemonstrasikan penggunaan static members, pembuatan objek, pemanggilan method (this/super), method overloading, update field, dan simulasi transaksi.</p>
+
+        <h3>Blok-blok kode &amp; alur</h3>
+        <ol>
+            <li><strong>Banner dan text heading</strong>  menampilkan judul aplikasi ke console.</li>
+            <li><strong>Demo STATIC sebelum membuat objek</strong>  memanggil <code>Kendaraan.getTotalKendaraan()</code> dan method static class Mobil/Motor untuk menunjukkan nilai awal (biasanya 0).</li>
+            <li><strong>Pembuatan objek</strong>  membuat dua mobil dan dua motor. Constructor subclass memanggil <code>super(...)</code> sehingga penghitung global dan per-kelas bertambah.</li>
+            <li><strong>Demo after-creation static</strong>  menampilkan jumlah kendaraan, mobil, motor setelah pembuatan objek.</li>
+            <li><strong>Demo THIS dan SUPER</strong> 
+                <ul>
+                    <li>memanggil <code>tampilkanInfo()</code> (override + super)</li>
+                    <li>menghitung sewa menggunakan override vs parent</li>
+                    <li>menggunakan method perbandingan untuk menampilkan perbedaan harga</li>
+                </ul>
+            </li>
+            <li><strong>Demo method overloading</strong>  memanggil variasi <code>hitungTotalSewa</code> pada objek untuk menunjukkan overload behavior dan parameter tambahan (driver, helm).</li>
+            <li><strong>Demo updateHarga()</strong> menampilkan nilai, memanggil <code>updateHarga()</code>, lalu menampilkan nilai setelah update.</li>
+            <li><strong>Simulasi transaksi</strong> memanggil beberapa <code>hitungTotalSewa</code> dan menyimpan hasil ke variabel; panggilan ini juga mempengaruhi <code>totalPendapatan</code> berdasarkan implementasi di class parent.</li>
+            <li><strong>Tampilan statistik akhir</strong> memanggil <code>Kendaraan.tampilkanStatistik()</code> dan menampilkan jumlah per kategori.</li>
+        </ol>
+
+        <h3>Catatan penting</h3>
+        <ul>
+            <li>Akses langsung ke atribut protected dari <code>Main</code> (mis. <code>mobil2.hargaSewa</code>) hanya valid jika berada di package yang sama. Untuk enkapsulasi lebih baik gunakan getter.</li>
+            <li>Implementasi saat ini menggabungkan perhitungan dan mutasi statistik dalam satu method  ini dapat menyebabkan pencatatan pendapatan yang tidak akurat jika method dipakai hanya untuk simulasi. Pisahkan perhitungan dan perekaman transaksi bila perlu.</li>
+        </ul>
+    </div>
+
+
+</body>
+</html>
