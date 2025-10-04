@@ -45,13 +45,6 @@
             </li>
         </ol>
 
-        <h3>Rekomendasi singkat</h3>
-        <ul>
-            <li>Gunakan validasi input (harga >= 0, jumlah hari > 0).</li>
-            <li>Pindahkan penambahan <code>totalPendapatan</code> agar mencerminkan nilai transaksi akhir (setelah diskon/asuransi).</li>
-            <li>Untuk aplikasi multi-thread gunakan mekanisme thread-safe (synchronized atau Atomic).</li>
-            <li>Pertimbangkan <code>BigDecimal</code> untuk perhitungan keuangan.</li>
-        </ul>
     </div>
 
     <div class="file-section">
@@ -93,11 +86,6 @@
             </li>
         </ol>
 
-        <h3>Catatan &amp; rekomendasi</h3>
-        <ul>
-            <li>Karena <code>hitungTotalSewa</code> override mengubah hasil, pastikan ketika menghitung pendapatan global metode yang dipanggil untuk menambah pendapatan adalah versi final (yang memperhitungkan markup/driver).</li>
-            <li>Pertimbangkan menambahkan getter untuk atribut private jika diperlukan akses di luar class.</li>
-        </ul>
     </div>
 
     <div class="file-section">
@@ -129,12 +117,6 @@
                 <p>Menampilkan informasi jumlah motor terdaftar.</p>
             </li>
         </ol>
-
-        <h3>Catatan &amp; rekomendasi</h3>
-        <ul>
-            <li>Perhatikan pencatatan pendapatan: beberapa method memanggil <code>super.hitungTotalSewa</code> yang bisa langsung menambah <code>totalPendapatan</code>. Tentukan apakah pemanggilan method perhitungan juga harus merepresentasikan transaksi nyata.</li>
-            <li>Jika biaya helm atau biaya opsional lain ditambahkan, pertimbangkan untuk membuat objek transaksi terpisah agar pelaporan dan rollback lebih mudah.</li>
-        </ul>
     </div>
 
     <div class="file-section">
@@ -160,12 +142,6 @@
             <li><strong>Simulasi transaksi</strong> memanggil beberapa <code>hitungTotalSewa</code> dan menyimpan hasil ke variabel; panggilan ini juga mempengaruhi <code>totalPendapatan</code> berdasarkan implementasi di class parent.</li>
             <li><strong>Tampilan statistik akhir</strong> memanggil <code>Kendaraan.tampilkanStatistik()</code> dan menampilkan jumlah per kategori.</li>
         </ol>
-
-        <h3>Catatan penting</h3>
-        <ul>
-            <li>Akses langsung ke atribut protected dari <code>Main</code> (mis. <code>mobil2.hargaSewa</code>) hanya valid jika berada di package yang sama. Untuk enkapsulasi lebih baik gunakan getter.</li>
-            <li>Implementasi saat ini menggabungkan perhitungan dan mutasi statistik dalam satu method  ini dapat menyebabkan pencatatan pendapatan yang tidak akurat jika method dipakai hanya untuk simulasi. Pisahkan perhitungan dan perekaman transaksi bila perlu.</li>
-        </ul>
     </div>
 
 
